@@ -1,0 +1,12 @@
+[1mdiff --git a/src/main/java/com/ecom/shopsphere/controller/publicController.java b/src/main/java/com/ecom/shopsphere/controller/publicController.java[m
+[1mindex 5a5f0f5..060d24f 100644[m
+[1m--- a/src/main/java/com/ecom/shopsphere/controller/publicController.java[m
+[1m+++ b/src/main/java/com/ecom/shopsphere/controller/publicController.java[m
+[36m@@ -7,6 +7,6 @@[m [mpublic class publicController {[m
+ [m
+     @RequestMapping("/Health-Check")[m
+     public String healthcheck(){[m
+[31m-        return "Application is Running !";[m
+[32m+[m[32m        return "Application is Running hii  !";[m
+     }[m
+ }[m

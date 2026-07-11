@@ -7,6 +7,6 @@ public class publicController {
 
     @RequestMapping("/Health-Check")
     public String healthcheck(){
-        return "Application is Running !";
+        return "Application is Running !!";
     }
 }
