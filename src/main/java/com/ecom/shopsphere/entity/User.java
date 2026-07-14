@@ -25,15 +25,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
-    private String firstName;
 
-=======
     @NotBlank
     private String firstName;
 
     @NotBlank
->>>>>>> 9665014f809a43778d5b991f374791091a14099c
     private String lastName;
 
     @NotBlank
@@ -41,15 +37,12 @@ public class User {
     @Column(unique = true)
     private String email;
 
-<<<<<<< HEAD
-    private String password;
 
-    @NotBlank
-=======
+
     @NotBlank
     private String password;
 
->>>>>>> 9665014f809a43778d5b991f374791091a14099c
+
     private String phoneNumber;
 
 
