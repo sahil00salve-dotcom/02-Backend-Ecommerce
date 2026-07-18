@@ -1,7 +1,7 @@
 package com.ecom.shopsphere.config;
 
 import com.ecom.shopsphere.security.JwtFilter;
-import com.ecom.shopsphere.service.impl.UserServiceImpl;
+import com.ecom.shopsphere.service.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Configuration;
 
 
@@ -29,7 +29,7 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
     @Autowired
-    private UserServiceImpl userServiceimpl;
+    private UserDetailsServiceImpl userServiceDetailsimpl;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -67,7 +67,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider=new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userServiceimpl);
+        provider.setUserDetailsService(userServiceDetailsimpl);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

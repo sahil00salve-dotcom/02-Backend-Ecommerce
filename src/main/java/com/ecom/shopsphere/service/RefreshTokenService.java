@@ -20,16 +20,14 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(User user) {
 
-
-        RefreshToken refreshToken = new RefreshToken();
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                .orElse(new RefreshToken());
 
         refreshToken.setUser(user);
         refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(LocalDateTime.now().plus(7, ChronoUnit.DAYS));
+        refreshToken.setExpiryDate(LocalDateTime.now().plusDays(7));
 
-        RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
-
-        return savedToken;
+        return refreshTokenRepository.save(refreshToken);
     }
 
     public RefreshToken findByToken(String token) {

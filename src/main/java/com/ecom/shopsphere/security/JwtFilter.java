@@ -1,6 +1,7 @@
 package com.ecom.shopsphere.security;
 
 
+import com.ecom.shopsphere.service.impl.UserDetailsServiceImpl;
 import com.ecom.shopsphere.service.impl.UserServiceImpl;
 import com.ecom.shopsphere.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -25,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserServiceImpl userServiceimpl;
+    private UserDetailsServiceImpl userServiceimpl;
 
     @Override
     protected void doFilterInternal(
