@@ -1,11 +1,14 @@
 package com.ecom.shopsphere.service;
 
+import com.ecom.shopsphere.dto.request.RefreshTokenRequestDto;
+import com.ecom.shopsphere.dto.response.RefreshTokenResponseDto;
 import com.ecom.shopsphere.entity.RefreshToken;
 import com.ecom.shopsphere.entity.User;
 import com.ecom.shopsphere.repository.RefreshTokenRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,16 +27,16 @@ public class RefreshTokenService {
                 .orElse(new RefreshToken());
 
         refreshToken.setUser(user);
-        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setRefreshToken(UUID.randomUUID().toString());
         refreshToken.setExpiryDate(LocalDateTime.now().plusDays(7));
 
         return refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken findByToken(String token) {
+    public RefreshToken findByToken(String refreshToken) {
 
 
-        return refreshTokenRepository.findByToken(token)
+        return refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> {
                     return new RuntimeException("Refresh token not found");
                 });
@@ -52,10 +55,9 @@ public class RefreshTokenService {
 
     }
 
-    public boolean existsByToken(String token) {
+    public boolean existsByToken(String refreshToken) {
 
-
-        return refreshTokenRepository.existsByToken(token);
+        return refreshTokenRepository.existsByRefreshToken(refreshToken);
     }
 
     public RefreshToken verifyExpiration(RefreshToken refreshToken) {
@@ -72,11 +74,21 @@ public class RefreshTokenService {
 
     }
 
+    @Transactional
     public void deleteByToken(String token) {
 
+        RefreshToken refreshToken = refreshTokenRepository
+                .findByRefreshToken(token)
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
 
-        refreshTokenRepository.deleteByToken(token);
+        User user = refreshToken.getUser();
 
+        if (user != null) {
+            user.setRefreshToken(null);
+        }
 
+        refreshTokenRepository.delete(refreshToken);
     }
+
+
 }

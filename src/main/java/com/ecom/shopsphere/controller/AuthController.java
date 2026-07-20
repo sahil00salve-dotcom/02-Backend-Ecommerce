@@ -1,5 +1,8 @@
 package com.ecom.shopsphere.controller;
+
+import com.ecom.shopsphere.dto.ApiResponse;
 import com.ecom.shopsphere.dto.request.LoginRequestDto;
+import com.ecom.shopsphere.dto.request.RefreshTokenRequestDto;
 import com.ecom.shopsphere.dto.request.RegisterRequestDto;
 import com.ecom.shopsphere.dto.response.LoginResponseDto;
 import com.ecom.shopsphere.dto.response.RegisterResponseDto;
@@ -23,6 +26,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -41,23 +46,63 @@ public class AuthController {
 
 
     @GetMapping("/Health-Check")
-    public String healthcheck(){
+    public String healthcheck() {
         return "Application is Running !!";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> loginUser(@Valid @RequestBody LoginRequestDto dto) {
-      LoginResponseDto response= userService.login(dto);
-      return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<LoginResponseDto>> loginUser(@Valid @RequestBody LoginRequestDto dto) {
+        LoginResponseDto response = userService.login(dto);
+        return ResponseEntity.ok(
+                ApiResponse.<LoginResponseDto>builder()
+                        .success(true)
+                        .message("Login Successful")
+                        .data(response)
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?>registeruser(@Valid @RequestBody RegisterRequestDto dto){
-        RegisterResponseDto response=userService.registerUser(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> registeruser(@Valid @RequestBody RegisterRequestDto dto) {
+        RegisterResponseDto response = userService.registerUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.<RegisterResponseDto>builder()
+                        .success(true)
+                        .message("Sign-up Successful")
+                        .data(response)
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<?>> logout(@Valid @RequestBody RefreshTokenRequestDto dto) {
+        System.out.println("Logout endpoint hit");
+        refreshTokenService.deleteByToken(dto.getRefreshToken());
+        return ResponseEntity.ok(
+                ApiResponse.<String>builder()
+                        .success(true)
+                        .message("Logged out Successfully")
+                        .data(null)
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
+    }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(
+            @Valid @RequestBody RefreshTokenRequestDto dto) {
 
+        LoginResponseDto response = userService.refreshAccessToken(dto);
+        return ResponseEntity.ok(
+                ApiResponse.<LoginResponseDto>builder()
+                        .success(true)
+                        .message("Refresh Successful")
+                        .data(response)
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
+    }
 
 }

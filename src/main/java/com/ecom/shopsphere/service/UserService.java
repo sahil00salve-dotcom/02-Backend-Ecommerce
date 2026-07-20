@@ -1,6 +1,7 @@
 package com.ecom.shopsphere.service;
 
 import com.ecom.shopsphere.dto.request.LoginRequestDto;
+import com.ecom.shopsphere.dto.request.RefreshTokenRequestDto;
 import com.ecom.shopsphere.dto.request.RegisterRequestDto;
 import com.ecom.shopsphere.dto.response.LoginResponseDto;
 import com.ecom.shopsphere.dto.response.RegisterResponseDto;
@@ -18,6 +19,8 @@ public interface UserService {
     RegisterResponseDto registerAdmin(RegisterRequestDto dto);
 
     LoginResponseDto login(LoginRequestDto dto);
+
+    LoginResponseDto refreshAccessToken(RefreshTokenRequestDto dto);
 
     List<UserResponseDto> getAllUsers();
 

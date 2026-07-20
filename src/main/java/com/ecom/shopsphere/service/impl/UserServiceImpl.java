@@ -1,6 +1,7 @@
 package com.ecom.shopsphere.service.impl;
 
 import com.ecom.shopsphere.dto.request.LoginRequestDto;
+import com.ecom.shopsphere.dto.request.RefreshTokenRequestDto;
 import com.ecom.shopsphere.dto.request.RegisterRequestDto;
 import com.ecom.shopsphere.dto.response.LoginResponseDto;
 import com.ecom.shopsphere.dto.response.RegisterResponseDto;
@@ -92,10 +93,35 @@ public class UserServiceImpl implements UserService {
 
         return LoginResponseDto.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
+                .refreshToken(refreshToken.getRefreshToken())
                 .user(userDto)
                 .build();
     }
+
+    public LoginResponseDto refreshAccessToken(RefreshTokenRequestDto dto) {
+        // Find refresh token
+        RefreshToken refreshToken =
+                refreshTokenService.findByToken(dto.getRefreshToken());
+
+        // Check expiry
+        refreshTokenService.verifyExpiration(refreshToken);
+
+        // Get user from refresh token
+        User user = refreshToken.getUser();
+
+        // Generate new access token
+        String accessToken = jwtUtil.generateToken(user.getEmail());
+
+        // Rotate refresh token (recommended)
+        RefreshToken newRefreshToken =
+                refreshTokenService.createRefreshToken(user);
+
+        return LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(newRefreshToken.getRefreshToken())
+                .build();
+    }
+
 
     public List<UserResponseDto> getAllUsers(){
      return null;
